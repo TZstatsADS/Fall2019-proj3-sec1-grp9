@@ -10,9 +10,9 @@ In your final repo, there should be an R markdown file that organizes **all comp
 This file is currently a template for running evaluation experiments. You should update it according to your codes but following precisely the same structure. 
 
 ```{r message=FALSE}
-if(!require("EBImage")){
-  source("https://bioconductor.org/biocLite.R")
-  biocLite("EBImage")
+if (!requireNamespace("BiocManager", quietly = TRUE)){
+   install.packages("BiocManager")
+  BiocManager::install("EBImage")
 }
 if(!require("R.matlab")){
   install.packages("R.matlab")
@@ -47,14 +47,14 @@ library(caret)
 ### Step 0 set work directories, extract paths, summarize
 ```{r wkdir, eval=FALSE}
 set.seed(0)
-setwd("~/Project3-FacialEmotionRecognition/doc")
+setwd("~/GitHub/Fall2019-proj3-sec1--proj3-sec1-grp9/doc")
 # here replace it with your own path or manually set it in RStudio to where this rmd file is located. 
 # use relative path for reproducibility
 ```
 
 Provide directories for training images. Training images and Training fiducial points will be in different subfolders. 
 ```{r}
-train_dir <- "../data/train_set/" # This will be modified for different data sets.
+train_dir <- "../data/train_set/train_set/" # This will be modified for different data sets.
 train_image_dir <- paste(train_dir, "images/", sep="")
 train_pt_dir <- paste(train_dir,  "points/", sep="")
 train_label_path <- paste(train_dir, "label.csv", sep="") 
@@ -213,9 +213,9 @@ par_best <- list(k = model_best)
 
 * Train the model with the entire training set using the selected model (model parameter) via cross-validation.
 ```{r final_train}
-#tm_train=NA
-#tm_train <- system.time(fit_train <- train(dat_train, par_best))
-#save(fit_train, file="../output/fit_train.RData")
+# tm_train=NA
+# tm_train <- system.time(fit_train <- train(dat_train, par_best))
+# save(fit_train, file="../output/fit_train.RData")
 ```
 
 ### Step 5: Run test on test images
