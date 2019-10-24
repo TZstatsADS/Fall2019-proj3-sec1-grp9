@@ -232,17 +232,17 @@ save(fit_train, file="../output/fit_train.RData")
 tm_test=NA
 if(run.test){
   load(file="../output/fit_train.RData")
-  tm_test <- system.time(pred <- test(model_best, dat_test))
+  tm_test <- system.time(pred <- test(model_best = model, dat_test))
 }
 ```
 
 * evaluation
 ```{r}
-accu <- mean(dat_test$emotion_idx == pred)
+accu <- mean(dat_test$emotion_idx == round(pred,0))
 cat("The accuracy of model:", model_labels[which.min(err_cv[,1])], "is", accu*100, "%.\n")
 
 library(caret)
-confusionMatrix(pred, dat_test$emotion_idx)
+confusionMatrix(as.factor(round(pred,0)), as.factor(dat_test$emotion_idx))
 ```
 
 Note that the accuracy is not high but is better than that of ramdom guess(4.5%). 
