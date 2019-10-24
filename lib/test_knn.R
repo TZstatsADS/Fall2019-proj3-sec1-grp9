@@ -13,9 +13,13 @@ test <- function(k, dat_test){
 
   
   ### make predictions
-  pred <- class::knn(train = dat_train[,-which(names(dat_train) == 'emotion_idx')], 
-                     test = dat_test[,-which(names(dat_test) == 'emotion_idx')], 
-                     cl = dat_train$emotion_idx, 
-                     k = k)
+  pred <-  gbm(formula = emotion_idx ~.,
+               distribution = "gaussian",
+               data = dat_test,
+               n.trees = n,
+               cv.folds = 0,
+               interaction.depth = 2)
   return(pred)
 }
+
+pred <- predict.gbm(gbm_model,dat_test,n.trees = 500,interaction.depth = 2)

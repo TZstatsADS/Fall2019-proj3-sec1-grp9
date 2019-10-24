@@ -5,33 +5,23 @@
 ### Author: Chengliang Tang
 ### Project 3
 
-cv.function <- function(dat_train, K, k){
+cv.function <- function(dat_train,K, n){
   ### Input:
   ### - train data frame
   ### - K: a number stands for K-fold CV
-  ### - tuning parameters 
+  ### - n: number of trees
   
-  n <- dim(dat_train)[1]
-  n.fold <- round(n/K, 0)
-  set.seed(0)
-  s <- sample(rep(1:K, c(rep(n.fold, K-1), n-(K-1)*n.fold)))  
-  cv.error <- rep(NA, K)
   
-  for (i in 1:K){
-    train.data <- dat_train[s != i,]
-    test.data <- dat_train[s == i,]
-    
-    par <- list(k = k)
-    knn_model <- class::knn(train = train.data[,-which(names(train.data) == 'emotion_idx')], 
-                                   test = test.data[,-which(names(test.data) == 'emotion_idx')], 
-                                   cl = train.data$emotion_idx, 
-                                   k = k)
-    
+    gbm_model <- gbm(formula = emotion_idx ~.,
+                     distribution = "gaussian",
+                     data = dat_train,
+                     n.trees = n,
+                     cv.folds = K,
+                     interaction.depth = 2)
+
    
-    error <- mean(knn_model != test.data$emotion_idx) 
+    error <- min(gbm_model$cv.error) #MSE
     print(error)
-    cv.error[i] <- error
-    
-  }			
-  return(c(mean(cv.error),sd(cv.error)))
+
+  return(error)
 }

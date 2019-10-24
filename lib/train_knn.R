@@ -1,7 +1,7 @@
 ###########################################################
 ### Train a classification model with training features ###
 ###########################################################
-train <- function(feature_df = pairwise_data, par = NULL){
+train <- function(feature_df, par = NULL){
   ### Train a classfication model using processed features from training images
   
   ### Input:
@@ -11,14 +11,15 @@ train <- function(feature_df = pairwise_data, par = NULL){
   
 
   
-  ### Train with knn
-  if(is.null(par)){
-    k = 5
-  } else {
-    k = par$k
-  }
+  ### Train with gbm
+
+  model <-  gbm_model <- gbm(formula = emotion_idx ~.,
+                             distribution = "gaussian",
+                             data = dat_test,
+                             n.trees = 500,
+                             cv.folds = 0,
+                             interaction.depth = 2)
   
-  # model <- 
   
   return(model)
 }
