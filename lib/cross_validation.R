@@ -20,12 +20,12 @@ cv.function <- function(dat_train, K, gamma, cost){
   for (i in 1:K){
     train.data <- dat_train[s != i,]
     test.data <- dat_train[s == i,]
-  
-    par <- list(gamma = gamma, cost = cost)
-    fit <- train(train.data, par)
+
+    svm_model <- svm(emotion_idx~., data = train.data,
+                     kernel = "radial", gamma = gamma, cost = cost)
+    pred <- predict(svm_model, test.data)  
     
-    pred <- test(fit, test.data)  
-    error <- mean(pred != test.data$categoryID) 
+    error <- mean(pred != test.data$emotion_idx) 
     print(error)
     cv.error[i] <- error
     
