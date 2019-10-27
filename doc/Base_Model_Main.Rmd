@@ -84,14 +84,12 @@ run.feature.train=TRUE # process features for training set
 run.test=TRUE # run evaluation on an independent test set
 run.feature.test=TRUE # process features for test set
 ```
-Using cross-validation or independent test set evaluation, we compare the performance of models with different specifications. In this Starter Code, we tune parameter n.trees (number of trees) for gbm.
+Using cross-validation or independent test set evaluation, we compare the performance of models with different specifications. In this Starter Code, we tune parameter shrinkage for gbm.
 
 ```{r model_setup}
-trees = c(5,10,50,100,250,500)
-model_labels = paste("gbm with number of trees =", trees)
 
-#shrink <- c(0.1,0.05,0.01,0.005,0.001)
-#model_labels = paste("gbm with shrinkage =", shrink)
+shrink <- c(0.1,0.05,0.01,0.005,0.001)
+model_labels = paste("gbm with shrinkage =", shrink)
 ```
 
 ### Step 2: import data and train-test split 
@@ -125,7 +123,7 @@ readMat.matrix <- function(index){
 
 #load fiducial points
 fiducial_pt_list <- lapply(1:n_files, readMat.matrix)
-save(fiducial_pt_list, file="../output/fiducial_pt_list.RData")
+save(fiducial_pt_list, file="../output/gbm_fiducial_pt_list.RData")
 ```
 
 ### Step 3: construct features and responses
@@ -157,8 +155,8 @@ if(run.feature.train){
   tm_feature_test <- system.time(dat_test <- feature(fiducial_pt_list, test_idx))
 }
 
-save(dat_train, file="../output/feature_train.RData")
-save(dat_test, file="../output/feature_test.RData")
+save(dat_train, file="../output/gbm_feature_train.RData")
+save(dat_test, file="../output/gbm_feature_test.RData")
 ```
 
 ### Step 4: Train a classification model with training features and responses
@@ -187,14 +185,11 @@ source("../lib/test_knn.R")
 source("../lib/cross_validation_knn.R")
 if(run.cv){
   err_cv <- matrix(0, nrow = length(shrink), ncol = 2)
-  #for(i in 1:length(shrink)){
-  for (i in 1:length(trees)) {
-    cat("trees",trees[i],"\n")
-    err_cv[i,] <- cv.function(dat_train,K=5,n=trees[i])
-  
-    #cat("shrinkage=", shrink[i], "\n")
-    #err_cv[i,] <- cv.function(dat_train, K = 5, s = shrink[i])
-  save(err_cv, file="../output/err_cv.RData")
+  for(i in 1:length(shrink)){
+
+    cat("shrinkage=", shrink[i], "\n")
+    err_cv[i,] <- cv.function(dat_train, K = 5, s = shrink[i])
+  save(err_cv, file="../output/gbm_err_cv.RData")
     }
   }
 
@@ -203,20 +198,16 @@ if(run.cv){
 Visualize cross-validation results. 
 ```{r cv_vis}
 if(run.cv){
-  load("../output/err_cv.RData")
+  load("../output/gbm_err_cv.RData")
   err_cv <- as.data.frame(err_cv) 
-  colnames(err_cv) <-c("MSE")
-  #colnames(err_cv) <- c("Mean_Error","SD_Error")
-  #err_cv$shrink = as.factor(shrink)
-  err_cv$tree.n = as.factor(trees)
+  colnames(err_cv) <- c("Mean_Error","SD_Error")
+  err_cv$shrink = as.factor(shrink)
   err_cv %>% 
-    ggplot(aes(x=tree.n,y=MSE)) +
-   # ggplot(aes(x = shrink, y = Mean_Error,
-              # ymin = Mean_Error - SD_Error, ymax = Mean_Error + SD_Error)) + 
-    #geom_crossbar() + 
-    geom_point() +
+   ggplot(aes(x = shrink, y = Mean_Error,
+              ymin = Mean_Error - SD_Error, ymax = Mean_Error + SD_Error)) + 
+    geom_crossbar() + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    ggtitle("Parameter Selection") + xlab("Shrinkage") +
+    ggtitle("Parameter Selection") + xlab("Shrinkage") + ylab("Train Error") +
     theme(plot.title = element_text(hjust = 0.5))
 }
 
@@ -230,11 +221,8 @@ if(run.cv){
   model_best <- which.min(err_cv[,1])
 }
 
-par_best <- 500
 
-#par_best <- as.numeric(as.character(err_cv[model_best,2]))
-
-#par_best <- as.numeric(as.character(err_cv[model_best,3]))
+par_best <- as.numeric(as.character(err_cv[model_best,3]))
 ```
 
 * Train the model with the entire training set using the selected model (model parameter) via cross-validation.
@@ -242,7 +230,7 @@ par_best <- 500
 source("../lib/train_knn.R")
 tm_train=NA
 tm_train <- system.time(fit_train <- train(feature_df = dat_train, par = par_best))
-save(fit_train, file="../output/fit_train.RData")
+save(fit_train, file="../output/gbm_fit_train.RData")
 ```
 
 ### Step 5: Run test on test images
@@ -250,9 +238,8 @@ save(fit_train, file="../output/fit_train.RData")
 source("../lib/test_knn.R")
 tm_test=NA
 if(run.test){
-  load(file="../output/fit_train.RData")
-  #tm_test <- system.time(pred <- test(model_best = fit_train, dat_test))
-  tm_test <- system.time(pred <- test(model_best = model, dat_test))
+  load(file="../output/gbm_fit_train.RData")
+  tm_test <- system.time(pred <- test(model_best = fit_train, dat_test))
 }
 ```
 
