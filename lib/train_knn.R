@@ -9,25 +9,13 @@ train <- function(feature_df, par = NULL){
   ### - a parameter list
   ### Output: trained model
   
- X.mat <- feature_df %>%
-   select(-emotion_idx)
-  
-Response <- feature_df %>%
-  select(emotion_idx)
-  
-X.mat <- dat_train %>%
-  select(-emotion_idx)
-
-Response <- dat_train %>%
-  select(emotion_idx)
-
 
   ### Train with gbm
 
   model <- gbm(emotion_idx~., 
-               data = dat_train,
+               data = feature_df,
               distribution = "gaussian",
-                             n.trees = 500)
+                             shrinkage = par)
   
   
   return(model)
