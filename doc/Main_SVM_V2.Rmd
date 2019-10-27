@@ -209,7 +209,7 @@ if(run.cv){
 if(run.cv){
   model_best <- k[which.min(err_cv[,1]),]
 }
-par_best <- list(k = model_best)
+par_best <- model_best
 ```
 
 * Train the model with the entire training set using the selected model (model parameter) via cross-validation.
@@ -224,7 +224,7 @@ save(fit_train, file="../output/fit_train.RData")
 tm_test=NA
 if(run.test){
   load(file="../output/fit_train.RData")
-  tm_test <- system.time(pred <- test(model_best, dat_test))
+  tm_test <- system.time(pred <- test(fit_train, dat_test))
 }
 ```
 
