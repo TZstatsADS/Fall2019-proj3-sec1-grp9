@@ -5,22 +5,21 @@
 ### Author: Chengliang Tang
 ### Project 3
 
-cv.function <- function(dat_train,K, n){
+cv.function <- function(dat_train,K, s){
   ### Input:
   ### - train data frame
   ### - K: a number stands for K-fold CV
-  ### - n: number of trees
+  ### - s: shrinkage
   
   
     gbm_model <- gbm(formula = emotion_idx ~.,
                      distribution = "gaussian",
                      data = dat_train,
-                     n.trees = n,
                      cv.folds = K,
-                     interaction.depth = 2)
+                     shrinkage = s)
 
-   
-    error <- min(gbm_model$cv.error) #MSE
+    
+    error <- c(mean(gbm_model$train.error),sd(gbm_model$train.error)) #training error
     print(error)
 
   return(error)
