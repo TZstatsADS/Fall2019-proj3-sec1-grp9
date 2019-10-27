@@ -15,7 +15,7 @@ test <- function(model_best, dat_test){
   ### make predictions
   pred <-  predict.gbm(model_best,
                        dat_test,
-                       n.trees = 500)
+                       n.trees = 1)
   return(pred)
 
 }
