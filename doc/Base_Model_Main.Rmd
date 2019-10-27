@@ -52,7 +52,7 @@ library(gbm)
 ### Step 0 set work directories, extract paths, summarize
 
 ```{r wkdir, eval=FALSE}
-setwd('/Users/alexandradekinder/Documents/GitHub/Fall2019-proj3-sec1--proj3-sec1-grp9/doc')
+setwd('~/Documents/GitHub/Fall2019-proj3-sec1--proj3-sec1-grp9/doc')
 set.seed(0)
 # here replace it with your own path or manually set it in RStudio to where this rmd file is located. 
 # use relative path for reproducibility
@@ -60,7 +60,7 @@ set.seed(0)
 
 Provide directories for training images. Training images and Training fiducial points will be in different subfolders. 
 ```{r}
-train_dir <- "/Users/alexandradekinder/Documents/GitHub/Fall2019-proj3-sec1--proj3-sec1-grp9/doc/train_set/" # This will be modified for different data sets.
+train_dir <- "~/Documents/GitHub/Fall2019-proj3-sec1--proj3-sec1-grp9/doc/train_set/" # This will be modified for different data sets.
 train_image_dir <- paste(train_dir, "images/", sep="")
 train_pt_dir <- paste(train_dir,  "points/", sep="")
 train_label_path <- paste(train_dir, "label.csv", sep="") 
@@ -175,14 +175,14 @@ Call the train model and test model from library.
 + In this code, we use gbm to do classification. 
 
 ```{r loadlib}
-source("../lib/train_knn.R") 
-source("../lib/test_knn.R")
+source("../lib/train_base.R") 
+source("../lib/test_base.R")
 ```
 
 #### Model selection with cross-validation
 * Do model selection by choosing among different values of training model parameters.
 ```{r runcv, eval=F}
-source("../lib/cross_validation_knn.R")
+source("../lib/cross_validation_base.R")
 if(run.cv){
   err_cv <- matrix(0, nrow = length(shrink), ncol = 2)
   for(i in 1:length(shrink)){
@@ -227,7 +227,7 @@ par_best <- as.numeric(as.character(err_cv[model_best,3]))
 
 * Train the model with the entire training set using the selected model (model parameter) via cross-validation.
 ```{r final_train}
-source("../lib/train_knn.R")
+source("../lib/train_base.R")
 tm_train=NA
 tm_train <- system.time(fit_train <- train(feature_df = dat_train, par = par_best))
 save(fit_train, file="../output/gbm_fit_train.RData")
@@ -235,7 +235,7 @@ save(fit_train, file="../output/gbm_fit_train.RData")
 
 ### Step 5: Run test on test images
 ```{r test}
-source("../lib/test_knn.R")
+source("../lib/test_base.R")
 tm_test=NA
 if(run.test){
   load(file="../output/gbm_fit_train.RData")
