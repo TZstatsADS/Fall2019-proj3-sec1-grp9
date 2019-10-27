@@ -48,7 +48,7 @@ library(e1071)
 ### Step 0 set work directories, extract paths, summarize
 ```{r wkdir, eval=FALSE}
 set.seed(0)
-setwd("~/Smith/Columbia/AppliedDS/Fall2019-proj3-sec1--proj3-sec1-grp9-master/doc")
+setwd("~/GitHub/Fall2019-proj3-sec1--proj3-sec1-grp9/doc")
 # here replace it with your own path or manually set it in RStudio to where this rmd file is located. 
 # use relative path for reproducibility
 ```
@@ -207,16 +207,16 @@ if(run.cv){
 * Choose the "best" parameter value
 ```{r best_model}
 if(run.cv){
-  model_best <- k[which.min(err_cv[,1])]
+  model_best <- k[which.min(err_cv[,1]),]
 }
 par_best <- list(k = model_best)
 ```
 
 * Train the model with the entire training set using the selected model (model parameter) via cross-validation.
 ```{r final_train}
-# tm_train=NA
-# tm_train <- system.time(fit_train <- train(dat_train, par_best))
-# save(fit_train, file="../output/fit_train.RData")
+tm_train=NA
+tm_train <- system.time(fit_train <- train(dat_train, par_best))
+save(fit_train, file="../output/fit_train.RData")
 ```
 
 ### Step 5: Run test on test images

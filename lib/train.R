@@ -21,7 +21,7 @@ train <- function(feature_df = pairwise_data, par = NULL){
     cost = par$cost
   }
   
-   svm_model <- svm(categoryID~., data = feature_df,
+   svm_model <- svm(emotion_idx~., data = feature_df,
                     kernel = "radial", gamma = gamma, cost = cost) 
 
   return(model = svm_model)
