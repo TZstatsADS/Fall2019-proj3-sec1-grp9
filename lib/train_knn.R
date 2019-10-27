@@ -9,18 +9,28 @@ train <- function(feature_df, par = NULL){
   ### - a parameter list
   ### Output: trained model
   
-
+ X.mat <- feature_df %>%
+   select(-emotion_idx)
   
+Response <- feature_df %>%
+  select(emotion_idx)
+  
+X.mat <- dat_train %>%
+  select(-emotion_idx)
+
+Response <- dat_train %>%
+  select(emotion_idx)
+
+
   ### Train with gbm
 
-  model <-  gbm_model <- gbm(formula = emotion_idx ~.,
-                             distribution = "gaussian",
-                             data = dat_test,
-                             n.trees = 500,
-                             cv.folds = 0,
-                             interaction.depth = 2)
+  model <- gbm(emotion_idx~., 
+               data = dat_train,
+              distribution = "gaussian",
+                             n.trees = 500)
   
   
   return(model)
 }
+
 
