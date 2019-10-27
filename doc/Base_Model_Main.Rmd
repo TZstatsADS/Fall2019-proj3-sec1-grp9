@@ -89,6 +89,9 @@ Using cross-validation or independent test set evaluation, we compare the perfor
 ```{r model_setup}
 trees = c(5,10,50,100,250,500)
 model_labels = paste("gbm with number of trees =", trees)
+
+#shrink <- c(0.1,0.05,0.01,0.005,0.001)
+#model_labels = paste("gbm with shrinkage =", shrink)
 ```
 
 ### Step 2: import data and train-test split 
@@ -174,8 +177,8 @@ Call the train model and test model from library.
 + In this code, we use gbm to do classification. 
 
 ```{r loadlib}
-source("../lib/train_gbm.R") 
-source("../lib/test_gbm.R")
+source("../lib/train_knn.R") 
+source("../lib/test_knn.R")
 ```
 
 #### Model selection with cross-validation
@@ -183,13 +186,18 @@ source("../lib/test_gbm.R")
 ```{r runcv, eval=F}
 source("../lib/cross_validation_knn.R")
 if(run.cv){
-  err_cv <- matrix(0, nrow = length(trees), ncol = 1)
-  for(i in 1:length(trees)){
-    cat("trees=", trees[i], "\n")
-    err_cv[i,] <- cv.function(dat_train, K = 5, n = trees[i])
+  err_cv <- matrix(0, nrow = length(shrink), ncol = 2)
+  #for(i in 1:length(shrink)){
+  for (i in 1:length(trees)) {
+    cat("trees",trees[i],"\n")
+    err_cv[i,] <- cv.function(dat_train,K=5,n=trees[i])
+  
+    #cat("shrinkage=", shrink[i], "\n")
+    #err_cv[i,] <- cv.function(dat_train, K = 5, s = shrink[i])
   save(err_cv, file="../output/err_cv.RData")
+    }
   }
-}
+
 ```
 
 Visualize cross-validation results. 
@@ -197,14 +205,18 @@ Visualize cross-validation results.
 if(run.cv){
   load("../output/err_cv.RData")
   err_cv <- as.data.frame(err_cv) 
-  colnames(err_cv) <- c("MSE")
+  colnames(err_cv) <-c("MSE")
+  #colnames(err_cv) <- c("Mean_Error","SD_Error")
+  #err_cv$shrink = as.factor(shrink)
   err_cv$tree.n = as.factor(trees)
   err_cv %>% 
-    ggplot(aes(x = tree.n, y = MSE))+
-               #ymin = mean_error - sd_error, ymax = mean_error + sd_error)) + 
+    ggplot(aes(x=tree.n,y=MSE)) +
+   # ggplot(aes(x = shrink, y = Mean_Error,
+              # ymin = Mean_Error - SD_Error, ymax = Mean_Error + SD_Error)) + 
+    #geom_crossbar() + 
     geom_point() +
     theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-    ggtitle("Parameter Selection") + xlab("Number of Trees") +
+    ggtitle("Parameter Selection") + xlab("Shrinkage") +
     theme(plot.title = element_text(hjust = 0.5))
 }
 
@@ -217,21 +229,29 @@ if(run.cv){
 if(run.cv){
   model_best <- which.min(err_cv[,1])
 }
-par_best <- as.numeric(as.character(err_cv[model_best,2]))
+
+par_best <- 500
+
+#par_best <- as.numeric(as.character(err_cv[model_best,2]))
+
+#par_best <- as.numeric(as.character(err_cv[model_best,3]))
 ```
 
 * Train the model with the entire training set using the selected model (model parameter) via cross-validation.
 ```{r final_train}
+source("../lib/train_knn.R")
 tm_train=NA
-tm_train <- system.time(fit_train <- train(feature_df = dat_train,par =  par_best))
+tm_train <- system.time(fit_train <- train(feature_df = dat_train, par = par_best))
 save(fit_train, file="../output/fit_train.RData")
 ```
 
 ### Step 5: Run test on test images
 ```{r test}
+source("../lib/test_knn.R")
 tm_test=NA
 if(run.test){
   load(file="../output/fit_train.RData")
+  #tm_test <- system.time(pred <- test(model_best = fit_train, dat_test))
   tm_test <- system.time(pred <- test(model_best = model, dat_test))
 }
 ```
