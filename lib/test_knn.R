@@ -2,7 +2,7 @@
 ### Classification with testing data ###
 ########################################
 
-test <- function(k, dat_test){
+test <- function(model_best, dat_test){
   
   ### Input: 
   ###  - the fitted classification model using training data
@@ -13,13 +13,16 @@ test <- function(k, dat_test){
 
   
   ### make predictions
-  pred <-  gbm(formula = emotion_idx ~.,
-               distribution = "gaussian",
-               data = dat_test,
-               n.trees = n,
-               cv.folds = 0,
-               interaction.depth = 2)
+  pred <-  predict.gbm(model_best,
+                       dat_test,
+                       n.trees = 500)
   return(pred)
+
 }
 
-pred <- predict.gbm(gbm_model,dat_test,n.trees = 500,interaction.depth = 2)
+
+
+
+
+#predict.gbm(model,dat_test,n.trees = 500)
+#pred<-predict.gbm(model,dat_test,n.trees = 500)
