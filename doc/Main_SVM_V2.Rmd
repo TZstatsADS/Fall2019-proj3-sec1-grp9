@@ -5,7 +5,6 @@ output:
   html_document:
     df_print: paged
 ---
-In your final repo, there should be an R markdown file that organizes **all computational steps** for evaluating your proposed Facial Expression Recognition framework. 
 
 This file is currently a template for running evaluation experiments. You should update it according to your codes but following precisely the same structure. 
 
@@ -176,6 +175,8 @@ source("../lib/train.R")
 
 #### Model selection with cross-validation
 * Do model selection by choosing among different values of training model parameters.
+
+For svm, adjust the model using gamma (scope of grouping) and cost (the complexity of the function)
 ```{r runcv, eval=F}
 source("../lib/cross_validation.R")
 k <- data.frame(gamma = 10^(-5:-1), cost = 10^(5:1))

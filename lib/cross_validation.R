@@ -5,6 +5,7 @@
 ### Author: Chengliang Tang
 ### Project 3
 
+#cross validation for svm
 cv.function <- function(dat_train, K, gamma, cost){
   ### Input:
   ### - train data frame

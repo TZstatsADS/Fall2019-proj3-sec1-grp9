@@ -6,19 +6,19 @@
 
 Term: Fall 2019
 
-+ Team ##
++ Team 9
 + Team members
-	+ team member 1
-	+ team member 2
-	+ team member 3
-	+ team member 4
-	+ team member 5
+	+ Nichole Yao
+	+ Alexandra DeKinder
+	+ Yuting Gong
+	+ Adam Kravitz
 
-+ Project summary: In this project, we created a classification engine for facial emotion recognition. 
+
++ Project summary: In this project, we created a classification engine for facial emotion recognition comparing models (SVM, and an optimized GBM models) to a base GBM model.
 	
-**Contribution statement**: ([default](doc/a_note_on_contributions.md)) All team members contributed equally in all stages of this project. All team members approve our work presented in this GitHub repository including this contributions statement. 
+**Contribution statement**: All team members contributed equally in all stages of this project. We would all work together as a group as we worked in pairs to do seperate tasks and would stop to help eachother out if one of us needed help. Alex implemented the base GBM by herself and worked with Yuting on optimizing the gbm. Nichole, Yuting, and Adam all worked on implementing the svm model. Lastly, Nichole and Adam made the Powerpoint for the presention. All team members approve our work presented in this GitHub repository including this contributions statement. 
 
-Following [suggestions](http://nicercode.github.io/blog/2013-04-05-projects/) by [RICH FITZJOHN](http://nicercode.github.io/about/#Team) (@richfitz). This folder is orgarnized as follows.
+Our [Repo](https://github.com/TZstatsADS/Fall2019-proj3-sec1--proj3-sec1-grp9) by Team 9. This folder is orgarnized as follows.
 
 ```
 proj/
@@ -27,6 +27,7 @@ proj/
 ├── doc/
 ├── figs/
 └── output/
+└── presentation/
 ```
 
 Please see each subfolder for a README file.
