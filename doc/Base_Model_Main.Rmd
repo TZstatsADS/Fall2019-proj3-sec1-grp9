@@ -240,7 +240,10 @@ tm_test=NA
 if(run.test){
   load(file="../output/gbm_fit_train.RData")
   tm_test <- system.time(pred <- test(model_best = fit_train, dat_test))
+  write.csv(pred,file = "../output/final.pred.values.baseline.csv")
 }
+
+
 ```
 
 * evaluation
